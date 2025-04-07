@@ -29,8 +29,8 @@ info:
     description: "Save Money Bank Gateway Server Application"
     version: "1.0.0"
 
-#logging:
-#  level:
-#    com:
-#      savemoneybank:
-#        gatewayserver: DEBUG
+logging:
+  level:
+    org:
+      prudhviraj:
+        gatewayserver: DEBUG
