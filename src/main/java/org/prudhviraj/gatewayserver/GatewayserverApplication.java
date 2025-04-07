@@ -19,23 +19,59 @@ public class GatewayserverApplication {
     @Bean
     public RouteLocator saveMoneyBankRouteLocatorConfig(RouteLocatorBuilder routeLocatorBuilder) {
         return routeLocatorBuilder.routes()
+
+                // Route for ACCOUNTS microservice
                 .route(p -> p
+                        // Match incoming path that starts with /savemoneybank/accounts/
                         .path("/savemoneybank/accounts/**")
-                        .filters( f -> f.rewritePath("/savemoneybank/accounts/(?<segment>.*)","/${segment}")
+
+                        // Apply filters to the request
+                        .filters(f -> f
+                                // Rewrite the path by removing the /savemoneybank/accounts prefix
+                                // For example: /savemoneybank/accounts/details -> /details
+                                .rewritePath("/savemoneybank/accounts/(?<segment>.*)", "/${segment}")
+
+                                // Add a custom response header to show current time
                                 .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+
+                        // Forward the request to the ACCOUNTS microservice via service discovery (LoadBalancer)
                         .uri("lb://ACCOUNTS"))
+
+                // Route for LOANS microservice
                 .route(p -> p
+                        // Match incoming path that starts with /savemoneybank/loans/
                         .path("/savemoneybank/loans/**")
-                        .filters( f -> f.rewritePath("/savemoneybank/loans/(?<segment>.*)","/${segment}")
+
+                        // Apply filters to the request
+                        .filters(f -> f
+                                // Remove /savemoneybank/loans prefix and forward the rest
+                                .rewritePath("/savemoneybank/loans/(?<segment>.*)", "/${segment}")
+
+                                // Add a custom response header to the response
                                 .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+
+                        // Forward the request to the LOANS microservice via LoadBalancer
                         .uri("lb://LOANS"))
+
+                // Route for CARDS microservice
                 .route(p -> p
+                        // Match incoming path that starts with /savemoneybank/cards/
                         .path("/savemoneybank/cards/**")
-                        .filters( f -> f.rewritePath("/savemoneybank/cards/(?<segment>.*)","/${segment}")
+
+                        // Apply filters to the request
+                        .filters(f -> f
+                                // Remove /savemoneybank/cards prefix from the path
+                                .rewritePath("/savemoneybank/cards/(?<segment>.*)", "/${segment}")
+
+                                // Add a custom response header
                                 .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
-                        .uri("lb://CARDS")).build();
 
+                        // Forward to CARDS microservice using LoadBalancer
+                        .uri("lb://CARDS"))
 
+                // Build the complete route configuration
+                .build();
     }
+
 
 }
