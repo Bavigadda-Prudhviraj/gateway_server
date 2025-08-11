@@ -5,7 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @SpringBootApplication
@@ -44,6 +47,13 @@ public class GatewayserverApplication {
                                 // commented this line because we are implementing time out configuration is following circuit breaker design pattern
 //                                .circuitBreaker(cb -> cb.setName("loansCircuitBreaker")
 //                                        .setFallbackUri("forward:/contactSupport"))
+                                        //retry configuration
+                                        .retry(retryConfig -> retryConfig
+                                                .setRetries(2) // Retry a maximum of 2 times before failing
+                                                .setMethods(HttpMethod.GET) // Apply retry only for GET requests
+                                                .setBackoff(Duration.ofMillis(100), Duration.ofMillis(1000), 2, true) // Exponential backoff starting at 100ms, up to 1000ms, with multiplier 2
+                                        )
+
                         )
                         .uri("lb://LOANS"))
 
