@@ -30,7 +30,8 @@ public class GatewayserverApplication {
                                 .rewritePath("/savemoneybank/accounts/(?<segment>.*)", "/${segment}")
                                 // Add a custom response header to show current time
                                 .addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
-                                .circuitBreaker(cb -> cb.setName("accountsCircuitBreaker")))
+                                .circuitBreaker(cb -> cb.setName("accountsCircuitBreaker")
+                                        .setFallbackUri("forward:/contactSupport")))// when circuit breaker is open means service is down this fallback uri will be called
                         // Forward the request to the ACCOUNTS microservice via service discovery (LoadBalancer)
                         .uri("lb://ACCOUNTS"))
 
@@ -40,7 +41,8 @@ public class GatewayserverApplication {
                         .filters(f -> f
                                 .rewritePath("/savemoneybank/loans/(?<segment>.*)", "/${segment}")
                                 .addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
-                                .circuitBreaker(cb -> cb.setName("loansCircuitBreaker")))
+                                .circuitBreaker(cb -> cb.setName("loansCircuitBreaker")
+                                        .setFallbackUri("forward:/contactSupport")))
                         .uri("lb://LOANS"))
 
                 // Route for CARDS microservice
@@ -49,7 +51,8 @@ public class GatewayserverApplication {
                         .filters(f -> f
                                 .rewritePath("/savemoneybank/cards/(?<segment>.*)", "/${segment}")
                                 .addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
-                                .circuitBreaker(cb -> cb.setName("cardsCircuitBreaker")))
+                                .circuitBreaker(cb -> cb.setName("cardsCircuitBreaker")
+                                        .setFallbackUri("forward:/contactSupport")))
                         .uri("lb://CARDS"))
 
                 // Build the complete route configuration
