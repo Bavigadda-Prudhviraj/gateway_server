@@ -29,7 +29,8 @@ public class GatewayserverApplication {
                                 // For example: /savemoneybank/accounts/details -> /details
                                 .rewritePath("/savemoneybank/accounts/(?<segment>.*)", "/${segment}")
                                 // Add a custom response header to show current time
-                                .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+                                .addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
+                                .circuitBreaker(cb -> cb.setName("accountsCircuitBreaker")))
                         // Forward the request to the ACCOUNTS microservice via service discovery (LoadBalancer)
                         .uri("lb://ACCOUNTS"))
 
@@ -38,7 +39,8 @@ public class GatewayserverApplication {
                         .path("/savemoneybank/loans/**")
                         .filters(f -> f
                                 .rewritePath("/savemoneybank/loans/(?<segment>.*)", "/${segment}")
-                                .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+                                .addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
+                                .circuitBreaker(cb -> cb.setName("loansCircuitBreaker")))
                         .uri("lb://LOANS"))
 
                 // Route for CARDS microservice
@@ -46,7 +48,8 @@ public class GatewayserverApplication {
                         .path("/savemoneybank/cards/**")
                         .filters(f -> f
                                 .rewritePath("/savemoneybank/cards/(?<segment>.*)", "/${segment}")
-                                .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+                                .addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
+                                .circuitBreaker(cb -> cb.setName("cardsCircuitBreaker")))
                         .uri("lb://CARDS"))
 
                 // Build the complete route configuration

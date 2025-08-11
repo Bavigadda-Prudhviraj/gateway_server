@@ -83,3 +83,23 @@ logging:
     # Spring Boot actuator endpoints (if you're using them to monitor)
     org.springframework.boot.actuate.endpoint: DEBUG
     org.springframework.boot.actuate.endpoint.web: DEBUG
+resilience4j.circuitbreaker:
+  config:
+    default: # Name of the configuration preset (can be reused by multiple circuit breakers)
+      slidingWindowSize: 10
+      # The number of calls that will be recorded in the sliding window.
+      # In this case, the last 10 calls will be considered to calculate failure rate.
+      # Useful for defining how much recent history you want to base decisions on.
+
+      permittedNumberOfCallsInHalfOpenState: 2
+      # When the circuit is HALF-OPEN (testing if service has recovered),
+      # this is the max number of trial calls allowed before deciding to fully OPEN or CLOSE again.
+      # Example: Allow only 2 requests to check if service is healthy.
+
+      failureRateThreshold: 50
+      # The percentage of calls that must fail before the circuit breaker opens.
+      # Here: If 50% or more of the last `slidingWindowSize` calls fail, the circuit goes OPEN.
+
+      waitDurationInOpenState: 10s
+      # The time the circuit breaker will wait in OPEN state before switching to HALF-OPEN.
+      # Example: Wait 10 seconds before trying a test call to see if the service is back.
