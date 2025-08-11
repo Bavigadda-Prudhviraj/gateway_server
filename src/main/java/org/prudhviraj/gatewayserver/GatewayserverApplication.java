@@ -41,8 +41,10 @@ public class GatewayserverApplication {
                         .filters(f -> f
                                 .rewritePath("/savemoneybank/loans/(?<segment>.*)", "/${segment}")
                                 .addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
-                                .circuitBreaker(cb -> cb.setName("loansCircuitBreaker")
-                                        .setFallbackUri("forward:/contactSupport")))
+                                // commented this line because we are implementing time out configuration is following circuit breaker design pattern
+//                                .circuitBreaker(cb -> cb.setName("loansCircuitBreaker")
+//                                        .setFallbackUri("forward:/contactSupport"))
+                        )
                         .uri("lb://LOANS"))
 
                 // Route for CARDS microservice
