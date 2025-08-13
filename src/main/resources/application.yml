@@ -1,0 +1,85 @@
+
+spring:
+  application:
+    name: "gatewayserver"
+  config:
+    import: "optional:configserver:http://localhost:8071/"
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+#      routes:
+#        - id: accounts-service
+#          uri: lb://ACCOUNTS
+#          predicates:
+#            - Path=/savemoneybank/accounts/**
+#          filters:
+#            - RewritePath=/savemoneybank/accounts/(?<segment>.*), /${segment}
+#            #- AddResponseHeader=X-Response-Time, "#{T(java.time.LocalDateTime).now().toString()}"
+#
+#        - id: loans-service
+#          uri: lb://LOANS
+#          predicates:
+#            - Path=/savemoneybank/loans/**
+#          filters:
+#            - RewritePath=/savemoneybank/loans/(?<segment>.*), /${segment}
+#            #- AddResponseHeader=X-Response-Time, "#{T(java.time.LocalDateTime).now().toString()}"
+#
+#        - id: cards-service
+#          uri: lb://CARDS
+#          predicates:
+#            - Path=/savemoneybank/cards/**
+#          filters:
+#            - RewritePath=/savemoneybank/cards/(?<segment>.*), /${segment}
+#            #- AddResponseHeader=X-Response-Time, "#{T(java.time.LocalDateTime).now().toString()}"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    gateway:
+      access: unrestricted
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: "gatewayserver"
+    description: "Save Money Bank Gateway Server Application"
+    version: "1.0.0"
+
+logging:
+  level:
+    # Your custom gateway code (package)
+    org.prudhviraj.gatewayserver: DEBUG
+
+    # Core Spring Cloud Gateway internals: routes, filters, predicates
+    org.springframework.cloud.gateway: DEBUG
+
+    # Load Balancer (Spring Cloud LoadBalancer)
+    org.springframework.cloud.client.loadbalancer: DEBUG
+
+    # Eureka client registration and discovery logs
+    org.springframework.cloud.netflix.eureka: DEBUG
+    com.netflix.discovery: DEBUG
+    com.netflix.eureka: DEBUG
+
+    # Web-related logging (request/response level)
+    org.springframework.web: DEBUG
+    org.springframework.http: DEBUG
+    org.springframework.boot.autoconfigure.web: DEBUG
+
+    # Spring Security - useful if you're using secure endpoints at Gateway
+    org.springframework.security: DEBUG
+
+    # Reactor Netty for gateway (if using WebFlux/reactive stack)
+    reactor.netty: DEBUG
+
+    # Spring Boot actuator endpoints (if you're using them to monitor)
+    org.springframework.boot.actuate.endpoint: DEBUG
+    org.springframework.boot.actuate.endpoint.web: DEBUG
