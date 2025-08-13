@@ -98,7 +98,7 @@
                 <version>3.4.5</version>
                 <configuration>
                     <to>
-                        <image>prudhvirajd852/${project.artifactId}:v6 </image>
+                        <image>prudhvirajd852/${project.artifactId}:v7</image>
                     </to>
                 </configuration>
             </plugin>
