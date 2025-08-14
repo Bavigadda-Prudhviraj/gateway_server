@@ -95,6 +95,9 @@ logging:
     # Spring Boot actuator endpoints (if you're using them to monitor)
     org.springframework.boot.actuate.endpoint: DEBUG
     org.springframework.boot.actuate.endpoint.web: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
+
 resilience4j.circuitbreaker:
   config:
     default:
