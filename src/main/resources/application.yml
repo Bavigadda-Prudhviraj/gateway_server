@@ -12,7 +12,7 @@ spring:
           lowerCaseServiceId: true
       httpclient:
         connect-timeout: 1000
-        response-timeout: 5s
+        response-timeout: 10s
   data:
     redis:
       connect-timeout: 2s
@@ -56,7 +56,9 @@ management:
   info:
     env:
       enabled: true
-
+  metrics:
+    tags:
+      application: ${spring.application.name}
 info:
   app:
     name: "gatewayserver"
@@ -93,6 +95,9 @@ logging:
     # Spring Boot actuator endpoints (if you're using them to monitor)
     org.springframework.boot.actuate.endpoint: DEBUG
     org.springframework.boot.actuate.endpoint.web: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
+
 resilience4j.circuitbreaker:
   config:
     default:
